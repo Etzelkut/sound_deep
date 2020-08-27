@@ -1,5 +1,7 @@
 #!/bin/bash
 
+pip install torch
+pip install matplotlib
 pip install torchcontrib
 pip install torchaudio -f https://download.pytorch.org/whl/torch_stable.html
 pip install librosa
