@@ -2,16 +2,6 @@ from depen import *
 import datasets
 import encoder
 
-re_dict = {
-    "path_dataset_encoder": "/home/aldeka/senior_sound/",
-    "input_size_encoder": 46960,
-    "d_encoder": 100,
-    "lr_encoder": 1e-3,
-}
-
-hparams = Namespace(**re_dict)
-
-
 #it is just for checking, for training each individual model and loading parameter make a separate function
 #this function can be moved to separate file if complicated
 def train_encoder(hparams):

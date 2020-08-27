@@ -24,3 +24,12 @@ def seed_e(seed_value):
   torch.cuda.manual_seed_all(seed_value)
   torch.backends.cudnn.deterministic = True
   torch.backends.cudnn.benchmark = False
+
+re_dict = {
+    "path_dataset_encoder": "/home/aldeka/senior_sound/",
+    "input_size_encoder": 46960,
+    "d_encoder": 100,
+    "lr_encoder": 1e-3,
+}
+
+hparams = Namespace(**re_dict)
