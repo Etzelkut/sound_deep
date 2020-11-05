@@ -9,6 +9,8 @@ https://doi.org/10.5281/zenodo.1045825)
 
 # Phonemizer -- *foʊnmaɪzɚ*
 
+* For simplicity use Phonemizer.ipynb
+
 * The phonemizer allows simple phonemization of words and texts in many languages.
 
 * Provides both the `phonemize` command-line tool and the Python function
