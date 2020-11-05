@@ -30,17 +30,8 @@ https://doi.org/10.5281/zenodo.1045825)
     phoneset](http://www.festvox.org/bsv/c4711.html), but it allows tokenization
     at the syllable level.
 
-  * [segments](https://github.com/cldf/segments) is a Unicode tokenizer that
-    build a phonemization from a grapheme to phoneme mapping provided as a file
-    by the user.
-
 
 ## Installation
-
-**You need python>=3.6.** If you really need to use python2, use an [older
-version](https://github.com/bootphon/phonemizer/releases/tag/v1.0) of
-the phonemizer.
-
 
 ### Dependencies
 
