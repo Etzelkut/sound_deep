@@ -43,11 +43,6 @@ https://doi.org/10.5281/zenodo.1045825)
 
         $ sudo apt-get install festival espeak-ng mbrola
 
-* When using the **espeak-mbrola** backend, additional mbrola voices must be
-  installed (see
-  [here](https://github.com/espeak-ng/espeak-ng/blob/master/docs/mbrola.md)). On
-  Debian/Ubuntu, list the possible voices with `apt search mbrola`.
-
 
 ### Phonemizer
 
@@ -61,24 +56,8 @@ https://doi.org/10.5281/zenodo.1045825)
         $ cd phonemizer
         $ [sudo] python setup.py install
 
-  If you experiment an error such as `ImportError: No module named
-  setuptools` during installation, refeer to [issue
-  11](https://github.com/bootphon/phonemizer/issues/11).
-
-
-### Docker image
-
-Alternatively you can run the phonemizer within docker, using the
-provided `Dockerfile**. To build the docker image, have a:
-
-    $ git clone https://github.com/bootphon/phonemizer
-    $ cd phonemizer
-    $ sudo docker build -t phonemizer .
-
-Then run an interactive session with:
-
-    $ sudo docker run -it phonemizer /bin/bash
-
+  If you get an error such as `No module named 'segments'
+  delete file segments.py from path phonemizer\phonemizer\backend
 
 ### Testing
 
@@ -92,9 +71,7 @@ suite from the root `phonemizer` folder (once you installed `pytest`):
 ## Python usage
 
 In Python import the `phonemize` function with `from phonemizer import
-phonemize`. See
-[here](https://github.com/bootphon/phonemizer/blob/master/phonemizer/phonemize.py#L32)
-for function documentation.
+phonemize`
 
 
 ## Command-line examples
@@ -115,149 +92,11 @@ See the installed backends with the `--version` option:
 
 ### Input/output exemples
 
-* from stdin to stdout:
-
-        $ echo "hello world" | phonemize
+        phonemize("hello world", backend = ='espeak')
         həloʊ wɜːld
-
-* from file to stdout
-
-        $ echo "hello world" > hello.txt
-        $ phonemize hello.txt
-        həloʊ wɜːld
-
-* from file to file
-
-        $ phonemize hello.txt -o hello.phon --strip
-        $ cat hello.phon
-        həloʊ wɜːld
-
-
-### Backends
-
-* The default is to use **espeak** us-english:
-
-        $ echo "hello world" | phonemize
-        həloʊ wɜːld
-        $ echo "hello world" | phonemize -l en-us -b espeak
-        həloʊ wɜːld
-
-* Use **festival** US English instead
-
-        $ echo "hello world" | phonemize -l en-us -b festival
+	
+	phonemize("hello world")
         hhaxlow werld
-
-* In French, using **espeak** and **espeak-mbrola**, with custom token
-  separators (see below). **espeak-mbrola** does not support words separation.
-
-        $ echo "bonjour le monde" | phonemize -b espeak -l fr-fr -p ' ' -w '/w '
-        b ɔ̃ ʒ u ʁ /w l ə /w m ɔ̃ d /w
-        $ echo "bonjour le monde" | phonemize -b espeak-mbrola -l mb-fr1 -p ' ' -w '/w '
-        b o~ Z u R l @ m o~ d
-
-* In Japanese, using **segments**
-
-        $ echo 'konnichiwa' | phonemize -b segments -l japanese
-        konnitʃiwa
-        $ echo 'konnichiwa' | phonemize -b segments -l ./phonemizer/share/japanese.g2p
-        konnitʃiwa
-
-
-### Supported languages
-
-The exhaustive list of supported languages is available with the command
-`phonemize --list-languages [--backend <backend>]`.
-
-* Languages supported by **espeak** are available
-  [here](https://github.com/espeak-ng/espeak-ng/blob/master/docs/languages.md).
-
-* Languages supported by **espeak-mbrola** are available
-  [here](https://github.com/numediart/MBROLA-voices). Please note that the
-  mbrola voices are not bundled with the phonemizer and must be installed
-  separately.
-
-* Languages supported by **festival** are:
-
-        en-us -> english-us
-
-* Languages supported by the **segments** backend are:
-
-        chintang  -> ./phonemizer/share/segments/chintang.g2p
-	    cree      -> ./phonemizer/share/segments/cree.g2p
-	    inuktitut -> ./phonemizer/share/segments/inuktitut.g2p
-	    japanese  -> ./phonemizer/share/segments/japanese.g2p
-	    sesotho   -> ./phonemizer/share/segments/sesotho.g2p
-	    yucatec   -> ./phonemizer/share/segments/yucatec.g2p
-
-  Instead of a language you can also provide a file specifying a
-  grapheme to phone mapping (see the files above for examples).
-
-
-### Token separators
-
-You can specify separators for phones, syllables (**festival** only) and
-words (excepted **espeak-mbrola**).
-
-    $ echo "hello world" | phonemize -b festival -w ' ' -p ''
-    hhaxlow werld
-
-    $ echo "hello world" | phonemize -b festival -p ' ' -w ''
-    hh ax l ow w er l d
-
-    $ echo "hello world" | phonemize -b festival -p '-' -s '|'
-    hh-ax-l-|ow-| w-er-l-d-|
-
-    $ echo "hello world" | phonemize -b festival -p '-' -s '|' --strip
-    hh-ax-l|ow w-er-l-d
-
-    $ echo "hello world" | phonemize -b festival -p ' ' -s ';esyll ' -w ';eword '
-    hh ax l ;esyll ow ;esyll ;eword w er l d ;esyll ;eword
-
-You cannot specify the same separator for several tokens (for instance
-a space for both phones and words):
-
-    $ echo "hello world" | phonemize -b festival -p ' ' -w ' '
-    fatal error: illegal separator with word=" ", syllable="" and phone=" ",
-    must be all differents if not empty
-
-
-### Punctuation
-
-By default the punctuation is removed in the phonemized output. You can preserve
-it using the ``--preserve-punctuation`` option (not supported by the
-**espeak-mbrola** backend):
-
-    $ echo "hello, world!" | phonemize --strip
-    həloʊ wɜːld
-
-    $ echo "hello, world!" | phonemize --preserve-punctuation --strip
-    həloʊ, wɜːld!
-
-
-### Espeak specific options
-
-* The **espeak** backend can output the stresses on phones:
-
-        $ echo "hello world" | phonemize -l en-us -b espeak --with-stress
-        həlˈoʊ wˈɜːld
-
-* The **espeak** backend can switch languages during phonemization (below from
-  French to English), use the ``--language-switch`` option to deal with it:
-
-        $ echo "j'aime le football" | phonemize -l fr-fr -b espeak --language-switch keep-flags
-        [WARNING] fount 1 utterances containing language switches on lines 1
-        [WARNING] extra phones may appear in the "fr-fr" phoneset
-        [WARNING] language switch flags have been kept (applying "keep-flags" policy)
-        ʒɛm lə- (en)fʊtbɔːl(fr)
-
-        $ echo "j'aime le football" | phonemize -l fr-fr -b espeak --language-switch remove-flags
-        [WARNING] fount 1 utterances containing language switches on lines 1
-        [WARNING] extra phones may appear in the "fr-fr" phoneset
-        [WARNING] language switch flags have been removed (applying "remove-flags" policy)
-        ʒɛm lə- fʊtbɔːl
-
-        $ echo "j'aime le football" | phonemize -l fr-fr -b espeak --language-switch remove-utterance
-        [WARNING] removed 1 utterances containing language switches (applying "remove-utterance" policy)
 
 
 ## Licence
