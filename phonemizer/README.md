@@ -90,13 +90,19 @@ See the installed backends with the `--version` option:
     available backends: espeak-ng-1.49.3, espeak-mbrola, festival-2.5.0, segments-2.0.1
 
 
-### Input/output exemples
+### Input/output examples
 
-        phonemize("hello world", backend = ='espeak')
+	phonemize("hello world", backend = ='espeak')
         həloʊ wɜːld
 	
 	phonemize("hello world")
         hhaxlow werld
+	
+### Input/output with token separator and stress
+	
+	
+	phonemize("Hello world",backend='espeak',with_stress=True, separator=separator.Separator(phone=' ', syllable='', word=''))
+        h ə l ˈoʊ w ˈɜː l d 
 
 
 ## Licence
