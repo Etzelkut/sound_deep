@@ -57,7 +57,7 @@ https://doi.org/10.5281/zenodo.1045825)
         $ [sudo] python setup.py install
 
   If you get an error such as `No module named 'segments'
-  delete file segments.py from path phonemizer\phonemizer\backend
+  delete line in phonemizer\phonemizer\backend\segments.py: import segments
 
 ### Testing
 
