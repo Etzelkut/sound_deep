@@ -71,7 +71,7 @@ suite from the root `phonemizer` folder (once you installed `pytest`):
 ## Python usage
 
 In Python import the `phonemize` function with `from phonemizer import
-phonemize`
+phonemize` and import the `separator` with `from phonemizer import separator`  
 
 
 ## Command-line examples
