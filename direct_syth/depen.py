@@ -46,7 +46,7 @@ def seed_e(seed_value):
 
 train_audio_transforms = nn.Sequential(
     #torchaudio.transforms.Resample(hyperparams.orig_sample_rate, hyperparams.sampling_rate),
-    torchaudio.transforms.MelSpectrogram(sample_rate=hyperparams.sampling_rate, n_mels=hyperparams.n_mels, ),
+    torchaudio.transforms.MelSpectrogram(sample_rate=hyperparams.sampling_rate, n_mels=hyperparams.n_mels,),
     torchaudio.transforms.FrequencyMasking(freq_mask_param=hyperparams.freq_mask_param),
     torchaudio.transforms.TimeMasking(time_mask_param=hyperparams.time_mask_param)
 )

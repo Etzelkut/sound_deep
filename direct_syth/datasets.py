@@ -134,8 +134,8 @@ class COMMONVOICE(Dataset):
                  reconstructed = False,
                  dias_ph = False) -> None:
   
-    if dias_ph:
-      assert dias_ph == reconstructed
+    #if dias_ph:
+    #  assert dias_ph == reconstructed
     self.dias_ph = dias_ph
     self.multinumber = multinumber
     self.multi_size = multi_size
@@ -306,7 +306,7 @@ class Common_pl_dataset(pl.LightningDataModule):
 
   def setup(self): 
     TSV_train, TSV_test, TSV_val = self.hparams.train_path, self.hparams.dev_path, self.hparams.test_path
-    self.dataset_train = COMMONVOICE(self.hparams.path_dataset_common, TSV_train, 10, mel_limit=self.hparams.mel_limit, reconstructed = self.hparams.reconstructed, dias_ph = self.hparams.dias_ph)
+    self.dataset_train = COMMONVOICE(self.hparams.path_dataset_common, TSV_train, self.hparams.drow_train_examples, mel_limit=self.hparams.mel_limit, reconstructed = self.hparams.reconstructed, dias_ph = self.hparams.dias_ph)
     self.dataset_test = COMMONVOICE(self.hparams.path_dataset_common, TSV_test, 2, mel_limit=self.hparams.mel_limit, reconstructed =self.hparams.reconstructed, dias_ph = self.hparams.dias_ph)
     self.dataset_val = COMMONVOICE(self.hparams.path_dataset_common, TSV_val, 2, mel_limit=self.hparams.mel_limit, reconstructed = self.hparams.reconstructed, dias_ph = self.hparams.dias_ph)
 
@@ -320,7 +320,7 @@ class Common_pl_dataset(pl.LightningDataModule):
 
   def val_dataloader(self):
     val_loader = DataLoader(dataset=self.dataset_val,
-                                batch_size=self.hparams.batch_size * 5,
+                                batch_size=self.hparams.batch_size * int(self.hparams.drow_train_examples / 2),
                                 shuffle=False,
                                 collate_fn=lambda x: collate_fn_common(x, 'valid', self.hparams.mel_limit, reconstructed_phoneme = self.hparams.reconstructed_phoneme),
                                 num_workers = self.hparams.num_workers)
@@ -328,7 +328,7 @@ class Common_pl_dataset(pl.LightningDataModule):
 
   def test_dataloader(self):
     test_loader = DataLoader(dataset=self.dataset_test,
-                                batch_size=self.hparams.batch_size * 5,
+                                batch_size=self.hparams.batch_size * int(self.hparams.drow_train_examples / 2),
                                 shuffle=False,
                                 collate_fn=lambda x: collate_fn_common(x, 'valid', self.hparams.mel_limit, reconstructed_phoneme = self.hparams.reconstructed_phoneme),
                                 num_workers = self.hparams.num_workers)

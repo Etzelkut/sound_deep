@@ -34,22 +34,25 @@ for f in s:
 
 print("############################### Test")
 
-TSV = "dev.tsv"
-dataset = COMMONVOICE(hyperparams.path_dataset_common, TSV, 2)
+TSV = "ph_end_new_my_test.tsv"
+dataset = COMMONVOICE(hyperparams.path_dataset_common, TSV, 2, mel_limit=2500, reconstructed=True, dias_ph=True)
 
 everything, truefalse = dataset[1]
 waveforms, waveform_l, sample_rates, client_ids, sentences, sentences_l = everything
 print(waveforms, "\n", sample_rates, "\n", client_ids, "\n", sentences, "\n", truefalse)
+
 
 print("############################### Collate Test")
 listt = [1, 2]
 listt[0] = dataset[0]
 listt[1] = dataset[1]
 
-sentences_tensor, sentences_mask, spectrograms, mel_mask, waveforms, waveform_l, client_ids, example_id = collate_fn_common(listt, "test")"""
-"""model = Model_Check(hyperparams)
+sentences_tensor, sentences_mask, spectrograms, mel_mask, waveforms, waveform_l, client_ids, example_id = collate_fn_common(listt, "test", reconstructed_phoneme=True)
+
+print(sentences_tensor.shape, spectrograms.shape)
+model = Model_Check(hyperparams)
 x = model.forward(sentences_tensor, sentences_mask, spectrograms, mel_mask)
-print(x.shape)"""
+print(x.shape)
 
 """
 print("Sentence tensor \n", sentences_tensor, "\n", sentences_tensor.shape)
@@ -68,6 +71,9 @@ print("client_ids \n", client_ids, "\n", len(client_ids))
 print("###############################")
 print("example_id \n", example_id, "\n", len(example_id))
 print("###############################")
+"""
+
+
 """
 
 
