@@ -108,7 +108,7 @@ def choose_ff(d_model, d_ff, dropout, type_c):
         return PositionwiseFeedForward(d_model, d_ff, dropout)
     else:
         mult = int(d_ff/d_model)
-        return FeedForward(d_model, mult, dropout, activation=Swish(), glu = True)
+        return FeedForward(d_model, mult, dropout, activation=Swish, glu = True)
 
 
 class EncoderLayer(nn.Module):
@@ -255,7 +255,7 @@ def make_decoder_model(hparams):
     )
     for p in model.parameters():
         if p.dim() > 1:
-            nn.init.xavier_uniform__(p)
+            nn.init.xavier_uniform_(p)
     return model
 
 

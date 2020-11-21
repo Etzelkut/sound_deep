@@ -17,27 +17,27 @@ re_dict = {
     "heads": 4,
     "pe_max_len": 300,
     "dropout": 0.1,
-    "encoder_number": 3,
+    "encoder_number": 4,
     #
     "n_mels": 128,
     "n_mels_ff": 256, 
     "pe_mels_max_len": 2500, 
     "mel_limit":2500,
     #
-    "decoder_number": 2,
+    "decoder_number": 3,
     #AUDIO
     "attention_type_audio_encoder": "performer", #performer, selfatt, linear
-    "feedforward_type_audio_encoder": "classic", # classic, glu
+    "feedforward_type_audio_encoder": "glu", # classic, glu
     "local_window_size": 512,
     #TEXT
     "attention_type_text_encoder": "performer", #performer, selfatt, linear
-    "feedforward_type_text_encoder": "classic", # classic, glu
+    "feedforward_type_text_encoder": "glu", # classic, glu
     #DECODER
     "attention_type_decoder": "performer", #performer, selfatt, linear
-    "feedforward_type_decoder": "classic", # classic, glu
+    "feedforward_type_decoder": "glu", # classic, glu
     #
-    "learning_rate": 3e-4,
-    "epochs": 50, 
+    "learning_rate": 1e-3,
+    "epochs": 100, 
     #
     "reconstructed_phoneme": True, # False and do phonemize
     "reconstructed": True, #if final true, if need to clean false
