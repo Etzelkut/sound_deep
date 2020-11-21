@@ -11,3 +11,5 @@
 !pip install phonemizer
 !apt-get install festival espeak-ng mbrola
 !pip install comet-ml
+!pip install local-attention
+!pip install einops
