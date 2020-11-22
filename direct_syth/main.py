@@ -29,16 +29,20 @@ def main(path):
     print(steps_per_epoch)
     model = Multi_Synth_pl(hyperparams, steps_per_epoch)
     lr_monitor = LearningRateMonitor(logging_interval='step')
-    checkpoint_callback = ModelCheckpoint(monitor="train_loss_epoch", save_last=True, 
+    checkpoint_callback = ModelCheckpoint(
+                                    monitor='val_loss',
+                                    save_last=True, 
                                       dirpath= os.path.join(path, "/checkpoints"),
-                                      filename='sample_model_{epoch}', period=1,)
+                                      filename='sample_model_{epoch}'
+                                      )
+    
     trainer = Trainer(callbacks=[checkpoint_callback, lr_monitor],
                     logger=comet_logger,
                     gpus=1,
                     profiler=True,
                     #auto_lr_find=True, #set hparams
                     #gradient_clip_val=0.5,
-                    check_val_every_n_epoch=5,
+                    check_val_every_n_epoch=3,
                     #early_stop_callback=True,
                     max_epochs = hyperparams.epochs,
                     #min_epochs=400,

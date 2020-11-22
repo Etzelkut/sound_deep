@@ -21,6 +21,8 @@ class Multi_Synth_pl(pl.LightningModule):
 	                                                                        epochs=self.hparams.epochs,
 	                                                                        anneal_strategy='linear'),
                         'name': 'lr_scheduler_lr',
+                        'interval': 'step', # or 'epoch'
+                        'frequency': 1,
                         }
         return [optimizer], [lr_scheduler]
     
