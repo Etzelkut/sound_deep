@@ -1,31 +1,50 @@
+from hparams import hyperparams
+print(hyperparams.path_dataset_common)
+
 from depen import *
-import datasets
-import encoder
+from model import Multi_Synth_pl
+from datasets import Common_pl_dataset
 
-#it is just for checking, for training each individual model and loading parameter make a separate function
-#this function can be moved to separate file if complicated
-def train_encoder(hparams):
-    print("training_encoder")
-    #save also params etc. in separate folder or in drive
+from pytorch_model_summary import summary
+from comet_ml import Experiment
+from pytorch_lightning.loggers import CometLogger
+from pytorch_lightning import Trainer
+from pytorch_lightning.callbacks import LearningRateMonitor, ModelCheckpoint
+
+def main(path):
+    seed_e(42)
+    comet_logger = CometLogger(
+    save_dir='log/',
+    api_key="23CU99n7TeyZdPeegNDlQ5aHf",
+    project_name="sound-proj",
+    workspace="etzelkut",
+    # rest_api_key=os.environ["COMET_REST_KEY"], # Optional
+    # experiment_name="default" # Optional
+    )
+    dataset_pl = Common_pl_dataset(hyperparams)
+    dataset_pl.prepare_data()
+    dataset_pl.setup()
+    train_loader = dataset_pl.train_dataloader()
+    steps_per_epoch = int(len(train_loader))
+    print(steps_per_epoch)
+    model = Multi_Synth_pl(hyperparams, steps_per_epoch)
+    lr_monitor = LearningRateMonitor(logging_interval='step')
+    checkpoint_callback = ModelCheckpoint(monitor="train_loss_epoch", save_last=True, 
+                                      dirpath= os.path.join(path, "/checkpoints"),
+                                      filename='sample_model_{epoch}', period=1,)
+    trainer = Trainer(callbacks=[checkpoint_callback, lr_monitor],
+                    logger=comet_logger,
+                    gpus=1,
+                    profiler=True,
+                    #auto_lr_find=True, #set hparams
+                    #gradient_clip_val=0.5,
+                    check_val_every_n_epoch=5,
+                    #early_stop_callback=True,
+                    max_epochs = hyperparams.epochs,
+                    #min_epochs=400,
+                    progress_bar_refresh_rate = 0,
+                    deterministic=True,)
+    trainer.fit(model, dataset_pl)
+    trainer.test()
 
 
-def load_encoder():
-    print("load")
-
-
-def main_check(hparams):
-    load_encoder()
-    data_module = datasets.MyDataModuleExample(hparams)
-    data_module.prepare_data()
-    data_module.setup()
-
-    n = 2
-    waveform, sample_rate, labels = data_module.yesno_data[n]
-
-    print("Waveform: {}\nSample rate: {}\nLabels: {}".format(waveform, sample_rate, labels))
-    print(waveform.shape)
-    print(len(labels))
-
-    plt.figure()
-    plt.plot(waveform.t().numpy())
-    plt.show()
