@@ -87,11 +87,11 @@ class Softmax_att(nn.Module):
 
 class Att_Choice(nn.Module):
     
-    def __init__(self, type_att, d_model, h, dropout, local_window_size, feature_redraw_interval = 1000, kernel_fn = nn.ReLU()):
+    def __init__(self, type_att, d_model, h, dropout, local_window_size = 256, local_heads = 0, feature_redraw_interval = 1000, kernel_fn = nn.ReLU()):
         super(Att_Choice, self).__init__()
         self.type_att = type_att
         if type_att == "performer":
-            self.att = SelfAttention(dim=d_model, heads=h, dropout=dropout, 
+            self.att = SelfAttention(dim=d_model, heads=h, dropout=dropout, local_heads= local_heads,
                             local_window_size=local_window_size, feature_redraw_interval=feature_redraw_interval, kernel_fn=kernel_fn)
         elif type_att =="selfatt":
             self.att = Softmax_att(d_model, h, dropout=dropout)
@@ -164,7 +164,7 @@ def make_encoder_text_model(hparams):
         layer=EncoderLayer(Att_Choice(
                                         hparams.attention_type_text_encoder, 
                                         hparams.d_model_emb, hparams.heads, 
-                                        hparams.dropout, int(hparams.local_window_size/2), 
+                                        hparams.dropout, int(hparams.local_window_size/2), hparams.local_heads,
                                         ), 
                             hparams.feedforward_type_text_encoder,
                             hparams.d_model_emb, hparams.d_ff, hparams.dropout),
@@ -183,7 +183,7 @@ def make_encoder_audio_model(hparams):
         layer=EncoderLayer(Att_Choice(
                                         hparams.attention_type_audio_encoder, 
                                         hparams.n_mels, hparams.heads, 
-                                        hparams.dropout, hparams.local_window_size, 
+                                        hparams.dropout, hparams.local_window_size, hparams.local_heads,
                                         ), 
                             hparams.feedforward_type_audio_encoder,
                             hparams.n_mels, hparams.n_mels_ff, hparams.dropout),        
@@ -246,7 +246,7 @@ def make_decoder_model(hparams):
         layer=DecoderLayer(Att_Choice(
                                         hparams.attention_type_decoder, 
                                         hparams.n_mels, hparams.heads, 
-                                        hparams.dropout, hparams.local_window_size, 
+                                        hparams.dropout, 
                                         ), 
                             hparams.feedforward_type_decoder,
                             hparams.n_mels, hparams.n_mels_ff, hparams.dropout),   

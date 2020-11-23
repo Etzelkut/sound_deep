@@ -29,15 +29,23 @@ class Multi_Synth_pl(pl.LightningModule):
     
     def batch_doing(self, batch):
         sentences_tensor, sentences_mask, spectrograms, mel_mask, waveforms, waveform_l, client_ids, example_ids = batch
-        repetition_per_example = int(len(spectrograms)/len(example_ids)) - 1
-        new_indecies = np.delete(np.arange(len(spectrograms)), example_ids)
+        if self.hparams.mask_reverse:
+            sentences_mask = sentences_mask == False
+            mel_mask = mel_mask == False
+        
+        if self.hparams.separate_example:
+            repetition_per_example = int(len(spectrograms)/len(example_ids)) - 1
+            new_indecies = np.delete(np.arange(len(spectrograms)), example_ids)
 
-        spectrograms_examples = torch.repeat_interleave(spectrograms[example_ids], repeats = repetition_per_example, dim=0)
-        mel_mask_examples = torch.repeat_interleave(mel_mask[example_ids], repeats = repetition_per_example, dim=0)
+            spectrograms_examples = torch.repeat_interleave(spectrograms[example_ids], repeats = repetition_per_example, dim=0)
+            mel_mask_examples = torch.repeat_interleave(mel_mask[example_ids], repeats = repetition_per_example, dim=0)
 
-        sentences_tensor = sentences_tensor[new_indecies]
-        sentences_mask = sentences_mask[new_indecies]
-        spectrograms = spectrograms[new_indecies]
+            sentences_tensor = sentences_tensor[new_indecies]
+            sentences_mask = sentences_mask[new_indecies]
+            spectrograms = spectrograms[new_indecies]
+        else:
+            mel_mask_examples = mel_mask
+            spectrograms_examples = torch.clone(spectrograms)
         #mel_mask = spectrograms[new_indecies]
 
         return sentences_tensor, sentences_mask, spectrograms_examples, mel_mask_examples, spectrograms

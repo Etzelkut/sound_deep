@@ -35,7 +35,6 @@ def main(path):
                                       dirpath= os.path.join(path, "/checkpoints"),
                                       filename='sample_model_{epoch}'
                                       )
-    
     trainer = Trainer(callbacks=[checkpoint_callback, lr_monitor],
                     logger=comet_logger,
                     gpus=1,
@@ -49,6 +48,9 @@ def main(path):
                     progress_bar_refresh_rate = 0,
                     deterministic=True,)
     trainer.fit(model, dataset_pl)
+    checkpoint_name = os.path.join(os.path.join(path, "/checkpoints"), 'manual_save' + str(228) + '.ckpt')
+    trainer.save_checkpoint(checkpoint_name)
     trainer.test()
+    return trainer
 
 

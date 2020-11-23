@@ -14,11 +14,15 @@ re_dict = {
     "vocab": 100,
     "d_model_emb": 128,
     "d_ff":256,
-    "heads": 4,
+    "heads": 8,
     "pe_max_len": 300,
     "dropout": 0.1,
     "encoder_number": 4,
-    #
+    #!
+    "local_heads": 4, #more that 0 enable local heads
+    "mask_reverse": True, #usually False and True for padded, reversing make False for padded
+    "separate_example": True, #if False will directly feed to audio encoder the output needed
+    #!
     "n_mels": 128,
     "n_mels_ff": 256, 
     "pe_mels_max_len": 2500, 
