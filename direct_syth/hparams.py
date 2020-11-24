@@ -14,14 +14,15 @@ re_dict = {
     "vocab": 100,
     "d_model_emb": 128,
     "d_ff":256,
-    "heads": 8,
+    "heads": 4,
     "pe_max_len": 300,
     "dropout": 0.1,
     "encoder_number": 4,
     #!
-    "local_heads": 4, #more that 0 enable local heads
+    "local_heads": 2, #more that 0 enable local heads
     "mask_reverse": True, #usually False and True for padded, reversing make False for padded
-    "separate_example": True, #if False will directly feed to audio encoder the output needed
+    "separate_example": False, #if False will directly feed to audio encoder the output needed
+    "add_sch": False,
     #!
     "n_mels": 128,
     "n_mels_ff": 256, 
@@ -32,7 +33,7 @@ re_dict = {
     #AUDIO
     "attention_type_audio_encoder": "performer", #performer, selfatt, linear
     "feedforward_type_audio_encoder": "glu", # classic, glu
-    "local_window_size": 512,
+    "local_window_size": 256,
     #TEXT
     "attention_type_text_encoder": "performer", #performer, selfatt, linear
     "feedforward_type_text_encoder": "glu", # classic, glu
@@ -40,7 +41,7 @@ re_dict = {
     "attention_type_decoder": "performer", #performer, selfatt, linear
     "feedforward_type_decoder": "glu", # classic, glu
     #
-    "learning_rate": 1e-3,
+    "learning_rate": 3e-4,
     "epochs": 100, 
     #
     "reconstructed_phoneme": True, # False and do phonemize

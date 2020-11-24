@@ -14,7 +14,7 @@ class Multi_Synth_pl(pl.LightningModule):
         return self.network(text_input, text_mask, audio_input, audio_mask)
     
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.parameters(), lr=self.hparams.learning_rate)
+        optimizer = torch.optim.AdamW(self.parameters(), lr=self.hparams.learning_rate)
         lr_scheduler = {'scheduler': torch.optim.lr_scheduler.OneCycleLR(optimizer,
 	                                                                        max_lr=self.hparams.learning_rate,
 	                                                                        steps_per_epoch=self.hparams.steps_per_epoch, #int(len(train_loader))
@@ -24,7 +24,10 @@ class Multi_Synth_pl(pl.LightningModule):
                         'interval': 'step', # or 'epoch'
                         'frequency': 1,
                         }
-        return [optimizer], [lr_scheduler]
+        if self.hparams.add_sch:
+            return [optimizer], [lr_scheduler]
+        else:
+            return optimizer
     
     
     def batch_doing(self, batch):
@@ -61,6 +64,10 @@ class Multi_Synth_pl(pl.LightningModule):
         self.log('train_loss', loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
         return loss
     
+    def training_epoch_end(self, outputs):
+        avg_loss = torch.stack(outputs).mean()
+        self.log('epoch_now', avg_loss, prog_bar=True, logger=True)
+        return {'avg_train_loss': avg_loss}
     #def training_step_end(self, outputs):
     #    avg_loss = outputs.mean()
     #    return {'avg_train_loss': avg_loss}
