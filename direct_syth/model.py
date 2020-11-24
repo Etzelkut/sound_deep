@@ -62,12 +62,13 @@ class Multi_Synth_pl(pl.LightningModule):
         loss = self.loss(x, spectrograms)
 
         self.log('train_loss', loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+
         return loss
     
     def training_epoch_end(self, outputs):
-        avg_loss = torch.stack(outputs).mean()
-        self.log('epoch_now', avg_loss, prog_bar=True, logger=True)
-        return {'avg_train_loss': avg_loss}
+    #    avg_loss = torch.stack(outputs).mean()
+        self.log('epoch_now', self.current_epoch, logger=True)
+    #    return {'avg_train_loss': avg_loss}
     #def training_step_end(self, outputs):
     #    avg_loss = outputs.mean()
     #    return {'avg_train_loss': avg_loss}
