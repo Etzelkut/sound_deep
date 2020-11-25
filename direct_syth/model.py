@@ -30,13 +30,13 @@ class Multi_Synth_pl(pl.LightningModule):
             return optimizer
     
     
-    def batch_doing(self, batch):
+    def batch_doing(self, batch, val = False):
         sentences_tensor, sentences_mask, spectrograms, mel_mask, waveforms, waveform_l, client_ids, example_ids = batch
         if self.hparams.mask_reverse:
             sentences_mask = sentences_mask == False
             mel_mask = mel_mask == False
         
-        if self.hparams.separate_example:
+        if self.hparams.separate_example or val:
             repetition_per_example = int(len(spectrograms)/len(example_ids)) - 1
             new_indecies = np.delete(np.arange(len(spectrograms)), example_ids)
 
@@ -74,7 +74,7 @@ class Multi_Synth_pl(pl.LightningModule):
     #    return {'avg_train_loss': avg_loss}
     
     def validation_step(self, batch, batch_idx):
-        sentences_tensor, sentences_mask, spectrograms_examples, mel_mask_examples, spectrograms = self.batch_doing(batch)
+        sentences_tensor, sentences_mask, spectrograms_examples, mel_mask_examples, spectrograms = self.batch_doing(batch, True)
 
         x = self(sentences_tensor, sentences_mask, spectrograms_examples, mel_mask_examples)
         x = x.unsqueeze(1).transpose(2,3).contiguous()
@@ -87,7 +87,7 @@ class Multi_Synth_pl(pl.LightningModule):
     #    return {'avg_val_loss': avg_loss}
 
     def test_step(self, batch, batch_idx):
-        sentences_tensor, sentences_mask, spectrograms_examples, mel_mask_examples, spectrograms = self.batch_doing(batch)
+        sentences_tensor, sentences_mask, spectrograms_examples, mel_mask_examples, spectrograms = self.batch_doing(batch, True)
         #([20, 1, 128, 1602])
         x = self(sentences_tensor, sentences_mask, spectrograms_examples, mel_mask_examples)
         x = x.unsqueeze(1).transpose(2,3).contiguous()
