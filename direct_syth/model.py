@@ -3,11 +3,11 @@ from modules import Model_Check
 
 
 class Multi_Synth_pl(pl.LightningModule):
-    def __init__(self, hparams, steps_per_epoch):
+    def __init__(self, conf, *args, **kwargs): #*args, **kwargs hparams, steps_per_epoch
         super().__init__()
-        self.hparams = hparams
+        self.save_hyperparameters(conf)
+        self.save_hyperparameters()
         self.network = Model_Check(self.hparams)
-        self.save_hyperparameters('steps_per_epoch')
         self.loss = nn.MSELoss()
 
     def forward(self, text_input, text_mask, audio_input, audio_mask):
