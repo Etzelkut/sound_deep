@@ -10,6 +10,10 @@ class Multi_Synth_pl(pl.LightningModule):
         self.network = Model_Check(self.hparams)
         self.loss = nn.MSELoss()
 
+        if self.hparams.off_mask:
+            print("!!! attention, mask is off!!!")
+
+
     def forward(self, text_input, text_mask, audio_input, audio_mask):
         return self.network(text_input, text_mask, audio_input, audio_mask)
     
@@ -35,7 +39,7 @@ class Multi_Synth_pl(pl.LightningModule):
         if self.hparams.mask_reverse:
             sentences_mask = sentences_mask == False
             mel_mask = mel_mask == False
-        
+
         if self.hparams.separate_example or val:
             repetition_per_example = int(len(spectrograms)/len(example_ids)) - 1
             new_indecies = np.delete(np.arange(len(spectrograms)), example_ids)
@@ -50,6 +54,10 @@ class Multi_Synth_pl(pl.LightningModule):
             mel_mask_examples = mel_mask
             spectrograms_examples = torch.clone(spectrograms)
         #mel_mask = spectrograms[new_indecies]
+
+        if self.hparams.off_mask:
+            sentences_mask = None
+            mel_mask_examples = None
 
         return sentences_tensor, sentences_mask, spectrograms_examples, mel_mask_examples, spectrograms
 

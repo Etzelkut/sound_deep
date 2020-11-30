@@ -54,7 +54,7 @@ class PositionalEncoding(nn.Module):
 
 class PositionwiseFeedForward(nn.Module):
     "Implements FFN equation."
-    def __init__(self, d_model, d_ff, dropout=0.1, d_change = None):
+    def __init__(self, d_model, d_ff, dropout=0.1, d_change = None, ):
         super(PositionwiseFeedForward, self).__init__()
         d_last = d_model
         if d_change is not None:
